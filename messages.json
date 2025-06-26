@@ -1,0 +1,20 @@
+[
+    {
+        "role": "lecturer",
+        "name": "Prof. John Smith",
+        "text": "hey",
+        "time": "6\/26\/2025, 11:42:27 AM"
+    },
+    {
+        "role": "student",
+        "name": "John Doe",
+        "text": "hey",
+        "time": "6\/26\/2025, 11:43:51 AM"
+    },
+    {
+        "role": "admin",
+        "name": "Admin User",
+        "text": "hey",
+        "time": "6\/26\/2025, 11:47:29 AM"
+    }
+]

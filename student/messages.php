@@ -6,6 +6,9 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'student') {
 }
 
 $page_title = 'Messages';
+$user_id = $_SESSION['user_id'];
+$user_name = $_SESSION['name'];
+$user_role = $_SESSION['role'];
 ob_start();
 ?>
 
@@ -13,149 +16,22 @@ ob_start();
     <div class="row mb-4">
         <div class="col-12">
             <h1 class="h3 mb-0 text-gray-800">Messages</h1>
-            <p class="text-muted">Communicate with lecturers and fellow students</p>
+            <p class="text-muted">Private chat with lecturers and support (admin).</p>
         </div>
     </div>
-
     <div class="row">
-        <div class="col-12">
+        <div class="col-12 col-lg-8 mx-auto">
             <div class="card">
-                <div class="card-body p-0">
-                    <div class="row g-0">
-                        <!-- Contacts List -->
-                        <div class="col-md-4">
-                            <div class="chat-contacts">
-                                <div class="p-3 border-bottom">
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="fas fa-search"></i></span>
-                                        <input type="text" class="form-control" placeholder="Search contacts..." id="searchContacts">
-                                    </div>
-                                </div>
-                                
-                                <div class="contacts-list">
-                                    <!-- Lecturer Contacts -->
-                                    <div class="contact-group">
-                                        <div class="contact-group-header p-2 bg-light">
-                                            <small class="text-muted fw-bold">Lecturers</small>
-                                        </div>
-                                        
-                                        <div class="contact-item active" data-contact="prof-smith">
-                                            <div class="d-flex align-items-center p-3 border-bottom">
-                                                <div class="flex-shrink-0">
-                                                    <img src="https://via.placeholder.com/40" class="rounded-circle" alt="Prof. Smith">
-                                                </div>
-                                                <div class="flex-grow-1 ms-3">
-                                                    <h6 class="mb-1">Prof. John Smith</h6>
-                                                    <small class="text-muted">Mathematics 101</small>
-                                                </div>
-                                                <div class="flex-shrink-0">
-                                                    <span class="badge bg-success rounded-pill">2</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="contact-item" data-contact="prof-johnson">
-                                            <div class="d-flex align-items-center p-3 border-bottom">
-                                                <div class="flex-shrink-0">
-                                                    <img src="https://via.placeholder.com/40" class="rounded-circle" alt="Prof. Johnson">
-                                                </div>
-                                                <div class="flex-grow-1 ms-3">
-                                                    <h6 class="mb-1">Prof. Sarah Johnson</h6>
-                                                    <small class="text-muted">Computer Science</small>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="contact-item" data-contact="prof-wilson">
-                                            <div class="d-flex align-items-center p-3 border-bottom">
-                                                <div class="flex-shrink-0">
-                                                    <img src="https://via.placeholder.com/40" class="rounded-circle" alt="Prof. Wilson">
-                                                </div>
-                                                <div class="flex-grow-1 ms-3">
-                                                    <h6 class="mb-1">Prof. Michael Wilson</h6>
-                                                    <small class="text-muted">Physics 101</small>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <!-- Student Contacts -->
-                                    <div class="contact-group">
-                                        <div class="contact-group-header p-2 bg-light">
-                                            <small class="text-muted fw-bold">Students</small>
-                                        </div>
-                                        
-                                        <div class="contact-item" data-contact="student-doe">
-                                            <div class="d-flex align-items-center p-3 border-bottom">
-                                                <div class="flex-shrink-0">
-                                                    <img src="https://via.placeholder.com/40" class="rounded-circle" alt="John Doe">
-                                                </div>
-                                                <div class="flex-grow-1 ms-3">
-                                                    <h6 class="mb-1">John Doe</h6>
-                                                    <small class="text-muted">Classmate - CS101</small>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="contact-item" data-contact="student-brown">
-                                            <div class="d-flex align-items-center p-3 border-bottom">
-                                                <div class="flex-shrink-0">
-                                                    <img src="https://via.placeholder.com/40" class="rounded-circle" alt="Emma Brown">
-                                                </div>
-                                                <div class="flex-grow-1 ms-3">
-                                                    <h6 class="mb-1">Emma Brown</h6>
-                                                    <small class="text-muted">Study Group</small>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Chat Window -->
-                        <div class="col-md-8">
-                            <div class="chat-messages">
-                                <!-- Chat Header -->
-                                <div class="chat-header">
-                                    <div class="d-flex align-items-center">
-                                        <div class="flex-shrink-0">
-                                            <img src="https://via.placeholder.com/40" class="rounded-circle" alt="Prof. Smith" id="chatAvatar">
-                                        </div>
-                                        <div class="flex-grow-1 ms-3">
-                                            <h6 class="mb-0" id="chatName">Prof. John Smith</h6>
-                                            <small class="text-muted" id="chatStatus">Online</small>
-                                        </div>
-                                        <div class="flex-shrink-0">
-                                            <button class="btn btn-sm btn-outline-primary">
-                                                <i class="fas fa-phone"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-outline-primary ms-1">
-                                                <i class="fas fa-video"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <!-- Messages Area -->
-                                <div class="messages-area" id="messagesArea">
-                                    <!-- Messages will be loaded here -->
-                                </div>
-                                
-                                <!-- Message Input -->
-                                <div class="message-input p-3 border-top">
-                                    <form id="messageForm">
-                                        <div class="input-group">
-                                            <input type="text" class="form-control" placeholder="Type your message..." id="messageInput">
-                                            <button class="btn btn-primary" type="submit">
-                                                <i class="fas fa-paper-plane"></i>
-                                            </button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="card-header d-flex align-items-center">
+                    <h5 class="mb-0 me-3"><i class="fas fa-comments me-2"></i>Private Chat</h5>
+                    <select id="recipientSelect" class="form-select w-auto ms-auto" style="min-width:200px;"></select>
+                </div>
+                <div class="card-body" id="chatBody" style="height: 350px; overflow-y: auto;"></div>
+                <div class="card-footer">
+                    <form id="chatForm" class="d-flex">
+                        <input type="text" class="form-control me-2" id="chatInput" placeholder="Type your message...">
+                        <button class="btn btn-primary" type="submit"><i class="fas fa-paper-plane"></i></button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -234,149 +110,86 @@ ob_start();
 </style>
 
 <script>
-// Sample messages data
-const messages = {
-    'prof-smith': [
-        { type: 'received', text: 'Hello! How can I help you with the calculus assignment?', time: '10:30 AM' },
-        { type: 'sent', text: 'Hi Professor! I have a question about problem 3 in the homework.', time: '10:32 AM' },
-        { type: 'received', text: 'Sure! Which part are you having trouble with?', time: '10:33 AM' },
-        { type: 'sent', text: 'I\'m not sure how to apply the chain rule in this case.', time: '10:35 AM' },
-        { type: 'received', text: 'Let me explain that step by step...', time: '10:36 AM' }
-    ],
-    'prof-johnson': [
-        { type: 'received', text: 'Your programming project looks great!', time: '2:15 PM' },
-        { type: 'sent', text: 'Thank you! I worked really hard on it.', time: '2:17 PM' }
-    ],
-    'prof-wilson': [],
-    'student-doe': [
-        { type: 'received', text: 'Hey! Are you going to the study group tonight?', time: '4:20 PM' },
-        { type: 'sent', text: 'Yes, I\'ll be there at 6 PM.', time: '4:22 PM' }
-    ],
-    'student-brown': []
-};
+const chatBody = document.getElementById('chatBody');
+const chatForm = document.getElementById('chatForm');
+const chatInput = document.getElementById('chatInput');
+const recipientSelect = document.getElementById('recipientSelect');
+const userId = <?php echo json_encode($user_id); ?>;
+const userName = <?php echo json_encode($user_name); ?>;
+const userRole = <?php echo json_encode($user_role); ?>;
+let recipientId = null;
+let recipientName = '';
+let recipientRole = '';
 
-let currentContact = 'prof-smith';
-
-// Contact click handler
-document.querySelectorAll('.contact-item').forEach(item => {
-    item.addEventListener('click', function() {
-        // Remove active class from all contacts
-        document.querySelectorAll('.contact-item').forEach(c => c.classList.remove('active'));
-        
-        // Add active class to clicked contact
-        this.classList.add('active');
-        
-        // Load messages for this contact
-        const contactId = this.dataset.contact;
-        loadMessages(contactId);
-        
-        // Update chat header
-        updateChatHeader(this);
-    });
-});
-
-function loadMessages(contactId) {
-    currentContact = contactId;
-    const messagesArea = document.getElementById('messagesArea');
-    const contactMessages = messages[contactId] || [];
-    
-    messagesArea.innerHTML = '';
-    
-    contactMessages.forEach(message => {
-        const messageDiv = document.createElement('div');
-        messageDiv.className = `message-bubble ${message.type}`;
-        messageDiv.innerHTML = `
-            <div class="bubble">${message.text}</div>
-            <div class="message-time">${message.time}</div>
-        `;
-        messagesArea.appendChild(messageDiv);
-    });
-    
-    // Scroll to bottom
-    messagesArea.scrollTop = messagesArea.scrollHeight;
+function fetchUsers() {
+    fetch('../getUsers.php')
+        .then(res => res.json())
+        .then(users => {
+            recipientSelect.innerHTML = '<option value="">Select recipient...</option>';
+            users.forEach(u => {
+                const label = `${u.name} (${u.role.charAt(0).toUpperCase() + u.role.slice(1)})`;
+                recipientSelect.innerHTML += `<option value="${u.id}" data-role="${u.role}">${label}</option>`;
+            });
+        });
 }
 
-function updateChatHeader(contactElement) {
-    const nameElement = contactElement.querySelector('h6');
-    const statusElement = contactElement.querySelector('small');
-    
-    document.getElementById('chatName').textContent = nameElement.textContent;
-    document.getElementById('chatStatus').textContent = 'Online';
-}
-
-// Message form handler
-document.getElementById('messageForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    const input = document.getElementById('messageInput');
-    const message = input.value.trim();
-    
-    if (message && currentContact) {
-        // Add message to the conversation
-        const now = new Date();
-        const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        
-        const newMessage = {
-            type: 'sent',
-            text: message,
-            time: timeString
-        };
-        
-        if (!messages[currentContact]) {
-            messages[currentContact] = [];
-        }
-        messages[currentContact].push(newMessage);
-        
-        // Reload messages
-        loadMessages(currentContact);
-        
-        // Clear input
-        input.value = '';
-        
-        // Simulate reply after 2 seconds
-        setTimeout(() => {
-            const replies = [
-                'Thanks for your message!',
-                'I\'ll get back to you soon.',
-                'That\'s a good question.',
-                'Let me check on that for you.',
-                'I\'m available for office hours tomorrow.'
-            ];
-            
-            const randomReply = replies[Math.floor(Math.random() * replies.length)];
-            const replyTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            
-            const replyMessage = {
-                type: 'received',
-                text: randomReply,
-                time: replyTime
-            };
-            
-            messages[currentContact].push(replyMessage);
-            loadMessages(currentContact);
-        }, 2000);
+function fetchMessages() {
+    if (!recipientId) {
+        chatBody.innerHTML = '<div class="text-center text-muted mt-5">Select a recipient to start chatting.</div>';
+        return;
     }
+    fetch('../messages.json')
+        .then(res => res.json())
+        .then(data => {
+            chatBody.innerHTML = '';
+            data.filter(msg =>
+                (msg.from_id == userId && msg.to_id == recipientId) ||
+                (msg.from_id == recipientId && msg.to_id == userId)
+            ).forEach(msg => {
+                const align = msg.from_id == userId ? 'text-end' : 'text-start';
+                const bg = msg.from_id == userId ? 'bg-primary text-white' : 'bg-light';
+                chatBody.innerHTML += `<div class='mb-2 ${align}'><span class='badge ${bg}'>${msg.from_name}: ${msg.text}</span><br><small class='text-muted'>${msg.time}</small></div>`;
+            });
+            chatBody.scrollTop = chatBody.scrollHeight;
+        });
+}
+
+recipientSelect.addEventListener('change', function() {
+    recipientId = this.value;
+    recipientName = this.options[this.selectedIndex].text;
+    recipientRole = this.options[this.selectedIndex].getAttribute('data-role');
+    fetchMessages();
 });
 
-// Search functionality
-document.getElementById('searchContacts').addEventListener('input', function(e) {
-    const searchTerm = e.target.value.toLowerCase();
-    const contactItems = document.querySelectorAll('.contact-item');
-    
-    contactItems.forEach(item => {
-        const name = item.querySelector('h6').textContent.toLowerCase();
-        const description = item.querySelector('small').textContent.toLowerCase();
-        
-        if (name.includes(searchTerm) || description.includes(searchTerm)) {
-            item.style.display = 'block';
-        } else {
-            item.style.display = 'none';
-        }
+chatForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    if (!recipientId) return;
+    const text = chatInput.value.trim();
+    if (!text) return;
+    const now = new Date();
+    const time = now.toLocaleString();
+    const msg = {
+        from_id: userId,
+        from_role: userRole,
+        from_name: userName,
+        to_id: recipientId,
+        to_role: recipientRole,
+        to_name: recipientName,
+        text,
+        time
+    };
+    fetch('../sendMessage.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(msg)
+    }).then(() => {
+        chatInput.value = '';
+        fetchMessages();
     });
 });
 
-// Load initial messages
-loadMessages('prof-smith');
+setInterval(fetchMessages, 1500);
+fetchUsers();
 </script>
 
 <?php

@@ -103,4 +103,16 @@ try {
         'error' => $e->getMessage()
     ]);
 }
+
+header('Content-Type: application/json');
+$data = json_decode(file_get_contents('php://input'), true);
+if (!$data) {
+    echo json_encode(['status' => 'error', 'message' => 'No data received']);
+    exit;
+}
+$file = __DIR__ . '/messages.json';
+$messages = file_exists($file) ? json_decode(file_get_contents($file), true) : [];
+$messages[] = $data;
+file_put_contents($file, json_encode($messages, JSON_PRETTY_PRINT));
+echo json_encode(['status' => 'success']);
 ?> 
