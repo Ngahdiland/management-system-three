@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Debug: Log the query result
             error_log("User query result: " . ($user ? "User found" : "User not found"));
             
-            if ($user && password_verify($password, $user['password'])) {
+            if ($user && $password === $user['password']) {
                 // Authentication successful
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['name'] = $user['name'];

@@ -24,7 +24,7 @@ unset($_SESSION['login_errors'], $_SESSION['login_email'], $_SESSION['login_role
         <div class="login-card">
             <div class="text-center mb-4">
                 <i class="fas fa-graduation-cap fa-3x text-primary mb-3"></i>
-                <h2 class="fw-bold">Learning Management System</h2>
+                <h2 class="fw-bold">School Management System</h2>
                 <p class="text-muted">Sign in to your account</p>
             </div>
             
@@ -73,7 +73,7 @@ unset($_SESSION['login_errors'], $_SESSION['login_email'], $_SESSION['login_role
                 </div>
             </form>
             
-            <div class="text-center mt-4">
+            <!-- <div class="text-center mt-4">
                 <p class="text-muted">Don't have an account? Contact your administrator</p>
                 <p class="text-muted small">
                     <strong>Test Credentials:</strong><br>
@@ -81,7 +81,7 @@ unset($_SESSION['login_errors'], $_SESSION['login_email'], $_SESSION['login_role
                     Lecturer: john.smith@lms.edu / password<br>
                     Student: john.doe@student.lms.edu / password
                 </p>
-            </div>
+            </div> -->
         </div>
     </div>
 

@@ -16,7 +16,7 @@ if (isset($_SESSION['user_id']) && isset($_SESSION['role'])) {
     }
 }
 
-// If not logged in, redirect to bypass login
-header('Location: bypass_login.php');
+// If not logged in, redirect to login.php
+header('Location: login.php');
 exit();
 ?> 
