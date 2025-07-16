@@ -5,10 +5,60 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'student') {
     exit();
 }
 
+require_once '../db.php';
+
 $page_title = 'Course Registration';
+$success = '';
+$error = '';
+
+// Define available courses (should ideally come from DB)
+$courseData = [
+    'CS101' => ['name' => 'Introduction to Computer Science', 'credits' => 3],
+    'MATH101' => ['name' => 'Calculus I', 'credits' => 4],
+    'ENG101' => ['name' => 'English Composition', 'credits' => 3],
+    'PHYS101' => ['name' => 'Physics I', 'credits' => 4],
+    'CHEM101' => ['name' => 'General Chemistry', 'credits' => 4],
+    'BIO101' => ['name' => 'Biology I', 'credits' => 4],
+];
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $selectedCourses = $_POST['courses'] ?? [];
+    $totalCredits = 0;
+    foreach ($selectedCourses as $code) {
+        if (isset($courseData[$code])) {
+            $totalCredits += $courseData[$code]['credits'];
+        }
+    }
+    if (empty($selectedCourses)) {
+        $error = 'Please select at least one course.';
+    } elseif ($totalCredits > 18) {
+        $error = 'Course load exceeds maximum of 18 credits.';
+    } else {
+        $student_id = $_SESSION['user_id'];
+        $semester = 'Fall 2024'; // You may want to fetch this from settings
+        $academic_year = '2024-2025';
+        $successCount = 0;
+        foreach ($selectedCourses as $code) {
+            // Check if already enrolled
+            $course = fetchRow("SELECT id FROM courses WHERE course_code = ?", [$code]);
+            if ($course) {
+                $enrolled = fetchRow("SELECT id FROM enrollments WHERE student_id = ? AND course_id = ? AND semester = ? AND academic_year = ?", [$student_id, $course['id'], $semester, $academic_year]);
+                if (!$enrolled) {
+                    executeQuery("INSERT INTO enrollments (student_id, course_id, semester, academic_year) VALUES (?, ?, ?, ?)", [$student_id, $course['id'], $semester, $academic_year]);
+                    $successCount++;
+                }
+            }
+        }
+        if ($successCount > 0) {
+            $success = "Successfully registered for $successCount course(s).";
+        } else {
+            $error = 'You are already registered for the selected courses.';
+        }
+    }
+}
+
 ob_start();
 ?>
-
 <div class="container-fluid">
     <div class="row mb-4">
         <div class="col-12">
@@ -23,15 +73,26 @@ ob_start();
                     <h5 class="mb-0"><i class="fas fa-user-plus me-2"></i>Register for Courses</h5>
                 </div>
                 <div class="card-body">
-                    <form>
+                    <?php if ($success): ?>
+                        <div class="alert alert-success"> <?php echo $success; ?> </div>
+                    <?php elseif ($error): ?>
+                        <div class="alert alert-danger"> <?php echo $error; ?> </div>
+                    <?php endif; ?>
+                    <form method="POST">
                         <div class="mb-3">
-                            <label for="selectCourse" class="form-label">Select Course</label>
-                            <select class="form-select" id="selectCourse">
-                                <option>Mathematics 101</option>
-                                <option>Physics 201</option>
-                                <option>Computer Science 101</option>
-                                <option>Chemistry 101</option>
-                            </select>
+                            <label class="form-label">Select Courses</label>
+                            <div class="row">
+                                <?php foreach ($courseData as $code => $course): ?>
+                                    <div class="col-md-6 mb-2">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="courses[]" value="<?php echo $code; ?>" id="course_<?php echo $code; ?>">
+                                            <label class="form-check-label" for="course_<?php echo $code; ?>">
+                                                <?php echo $course['name']; ?> (<?php echo $code; ?>, <?php echo $course['credits']; ?> credits)
+                                            </label>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
                         </div>
                         <button type="submit" class="btn btn-primary">Register</button>
                     </form>
@@ -40,97 +101,6 @@ ob_start();
         </div>
     </div>
 </div>
-
-<!-- Terms and Conditions Modal -->
-<div class="modal fade" id="termsModal" tabindex="-1">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Terms and Conditions</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <h6>Course Registration Terms</h6>
-                <ol>
-                    <li>Students must meet all prerequisites for selected courses.</li>
-                    <li>Course registration is binding once submitted.</li>
-                    <li>Maximum course load is 18 credits per semester.</li>
-                    <li>Schedule conflicts will result in automatic course removal.</li>
-                    <li>Tuition fees must be paid before registration is confirmed.</li>
-                    <li>Course withdrawal deadlines apply as per academic calendar.</li>
-                </ol>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-// Course selection tracking
-const courseCheckboxes = document.querySelectorAll('input[name="courses[]"]');
-const selectedCount = document.getElementById('selectedCount');
-const selectedCourses = document.getElementById('selectedCourses');
-const totalCredits = document.getElementById('totalCredits');
-
-const courseData = {
-    'CS101': { name: 'Introduction to Computer Science', credits: 3 },
-    'MATH101': { name: 'Calculus I', credits: 4 },
-    'ENG101': { name: 'English Composition', credits: 3 },
-    'PHYS101': { name: 'Physics I', credits: 4 },
-    'CHEM101': { name: 'General Chemistry', credits: 4 },
-    'BIO101': { name: 'Biology I', credits: 4 }
-};
-
-function updateSummary() {
-    const selected = Array.from(courseCheckboxes).filter(cb => cb.checked);
-    selectedCount.textContent = selected.length;
-    
-    let credits = 0;
-    let courseList = '';
-    
-    selected.forEach(checkbox => {
-        const course = courseData[checkbox.value];
-        credits += course.credits;
-        courseList += `<div class="badge bg-primary me-1 mb-1">${course.name}</div>`;
-    });
-    
-    totalCredits.textContent = credits;
-    selectedCourses.innerHTML = courseList;
-    
-    // Check if over credit limit
-    if (credits > 18) {
-        totalCredits.style.color = 'red';
-        totalCredits.innerHTML += ' <small class="text-danger">(Over limit!)</small>';
-    } else {
-        totalCredits.style.color = '';
-    }
-}
-
-courseCheckboxes.forEach(checkbox => {
-    checkbox.addEventListener('change', updateSummary);
-});
-
-// Form validation
-document.getElementById('registrationForm').addEventListener('submit', function(e) {
-    const selected = Array.from(courseCheckboxes).filter(cb => cb.checked);
-    const credits = selected.reduce((sum, cb) => sum + courseData[cb.value].credits, 0);
-    
-    if (selected.length === 0) {
-        e.preventDefault();
-        alert('Please select at least one course.');
-        return;
-    }
-    
-    if (credits > 18) {
-        e.preventDefault();
-        alert('Course load exceeds maximum of 18 credits.');
-        return;
-    }
-});
-</script>
-
 <?php
 $page_content = ob_get_clean();
 include '../includes/layout.php';
