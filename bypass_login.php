@@ -133,7 +133,7 @@ if (isset($_POST['role'])) {
 <body>
     <div class="container">
         <div class="header">
-            <h1>🎓 LMS Quick Access</h1>
+            <h1>🎓 SMS Quick Access</h1>
             <p>Select your role to continue</p>
         </div>
         

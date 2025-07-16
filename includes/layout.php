@@ -25,7 +25,7 @@ if (!isset($_SESSION['user_id'])) {
             
             <a class="navbar-brand" href="#">
                 <i class="fas fa-graduation-cap me-2"></i>
-                Learning Management System
+                School Management System
             </a>
             
             <div class="navbar-nav ms-auto">
